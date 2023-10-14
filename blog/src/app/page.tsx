@@ -1,10 +1,15 @@
-import Image from "next/image";
-import { Open_Sans } from "./";
+import CarouselPosts from '@/components/CarouselPosts';
+import FeaturedPosts from '@/components/FeaturedPosts';
+import Hero from '@/components/Hero';
 
-const sans = Open_Sans({ subsets: ["latin"] });
-
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24"></main>
+    <>
+      <Hero />
+      {/* @ts-expect-error Server Component */}
+      <FeaturedPosts />
+      {/* @ts-expect-error Server Component */}
+      <CarouselPosts />
+    </>
   );
 }
