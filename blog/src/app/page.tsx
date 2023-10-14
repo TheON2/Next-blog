@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Open_Sans } from "next/font/google";
+import { Open_Sans } from "./";
 
 const sans = Open_Sans({ subsets: ["latin"] });
 
