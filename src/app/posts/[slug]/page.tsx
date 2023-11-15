@@ -1,4 +1,5 @@
 import AdjacentPostCard from "@/components/AdjacentPostCard";
+import CKEditorContent from "@/components/CKEditorContent";
 import PostContent from "@/components/PostContent";
 import { getFeaturedPosts, getPostData } from "@/service/posts";
 import { Metadata } from "next";
@@ -25,8 +26,13 @@ export default async function PostPage({ params: { slug } }: Props) {
   const { title, path, next, prev } = post;
 
   return (
-    <article className="rounded-2xl overflow-hidden bg-gray-100 shadow-lg m-4">
-      <Image
+    <article className="overflow-hidden bg-gray-100 shadow-lg m-4">
+      <CKEditorContent
+        contentUrl={
+          "https://theon2blog.s3.ap-northeast-2.amazonaws.com/blog/1700034031627.html"
+        }
+      />
+      {/* <Image
         className="w-full h-1/5 max-h-[500px]"
         src={`/images/posts/${path}.png`}
         alt={title}
@@ -37,7 +43,7 @@ export default async function PostPage({ params: { slug } }: Props) {
       <section className="flex shadow-md">
         {prev && <AdjacentPostCard post={prev} type="prev" />}
         {next && <AdjacentPostCard post={next} type="next" />}
-      </section>
+      </section> */}
     </article>
   );
 }
