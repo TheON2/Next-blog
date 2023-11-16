@@ -138,8 +138,12 @@ export async function uploadPostData(
   htmlContent: string,
   contentType: string = "text/html"
 ): Promise<string> {
+  console.log("진입함");
   const fileName = `blog/${Date.now()}.html`;
   const buffer = Buffer.from(htmlContent, "utf-8");
+
+  console.log("buffer" + htmlContent);
+  console.log("buffer" + fileName);
 
   await s3Client.send(
     new PutObjectCommand({

@@ -3,7 +3,11 @@
 
 import React, { useEffect, useState } from "react";
 
-const CKEditorContent = ({ contentUrl }) => {
+interface CKEditorContentProps {
+  contentUrl: string; // contentUrl을 string 타입으로 지정
+}
+
+const CKEditorContent: React.FC<CKEditorContentProps> = ({ contentUrl }) => {
   const [content, setContent] = useState("");
   useEffect(() => {
     // S3 버킷에서 HTML 파일을 가져오는 함수
