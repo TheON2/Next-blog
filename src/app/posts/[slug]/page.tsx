@@ -1,9 +1,9 @@
 import AdjacentPostCard from "@/components/AdjacentPostCard";
 import CKEditorContent from "@/components/CKEditorContent";
-import PostContent from "@/components/PostContent";
 import { getFeaturedPosts, getPostData } from "@/service/posts";
+import { Card, CardBody, CardHeader } from "@nextui-org/card";
+import { Chip } from "@nextui-org/chip";
 import { Metadata } from "next";
-import Image from "next/image";
 
 type Props = {
   params: {
@@ -11,36 +11,47 @@ type Props = {
   };
 };
 
-export async function generateMetadata({
-  params: { slug },
-}: Props): Promise<Metadata> {
-  const { title, description } = await getPostData(slug);
-  return {
-    title,
-    description,
-  };
-}
+// export async function generateMetadata({
+//   params: { slug },
+// }: Props): Promise<Metadata> {
+//   const { title, description } = await getPostData(slug);
+//   return {
+//     title,
+//     description,
+//   };
+// }
 
 export default async function PostPage({ params: { slug } }: Props) {
   const post = await getPostData(slug);
-  const { title, fileUrl, next, prev } = post;
-  console.log("SLUG" + slug);
+  const { title, category, fileUrl, next, prev } = post;
+  console.log("SLUG" + post);
 
   return (
-    <article className="overflow-hidden bg-gray-100 shadow-lg m-4">
-      <CKEditorContent contentUrl={fileUrl} />
-
-      <section className="flex shadow-md">
-        {prev && <AdjacentPostCard post={prev} type="prev" />}
-        {next && <AdjacentPostCard post={next} type="next" />}
-      </section>
-    </article>
+    <div>
+      <Card className="py-4">
+        <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+          <h1 className="text-3xl font-bold">{title}</h1>
+          <div className="flex gap-4">
+            <Chip color="default">{category}</Chip>
+          </div>
+        </CardHeader>
+        <CardBody className="overflow-visible py-2">
+          <CKEditorContent contentUrl={fileUrl} />
+        </CardBody>
+      </Card>
+      <article className="overflow-hidden m-4">
+        <section className="flex shadow-md">
+          {prev && <AdjacentPostCard post={prev} type="prev" />}
+          {next && <AdjacentPostCard post={next} type="next" />}
+        </section>
+      </article>
+    </div>
   );
 }
 
-export async function getStaticParams() {
-  const posts = await getFeaturedPosts();
-  return posts.map((post) => ({
-    slug: post.fileUrl,
-  }));
-}
+// export async function getStaticParams() {
+//   const posts = await getFeaturedPosts();
+//   return posts.map((post) => ({
+//     slug: post.fileUrl,
+//   }));
+// }

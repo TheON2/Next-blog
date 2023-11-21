@@ -22,8 +22,12 @@ export type Post = {
   fileUrl: string;
 };
 
-export type PostData = Post & {
-  content: string;
+export type PostData = {
+  title: string;
+  fileUrl: string;
+  category: string;
+  date: string;
+  description: string;
   next: Post | null;
   prev: Post | null;
 };
@@ -47,13 +51,6 @@ export async function getNonFeaturedPosts(): Promise<Post[]> {
   return getAllPosts() //
     .then((posts) => posts.filter((post) => !post.featured));
 }
-
-// export const getAllPosts = cache(async () => {
-//   const filePath = path.join(process.cwd(), "data", "posts.json");
-//   return readFile(filePath, "utf-8")
-//     .then<Post[]>(JSON.parse)
-//     .then((posts) => posts.sort((a, b) => (a.date > b.date ? -1 : 1)));
-// });
 
 export const getAllPosts = async () => {
   try {
@@ -84,8 +81,12 @@ export async function getPostData(slug: string): Promise<PostData> {
   const next = index > 0 ? posts[index - 1] : null;
   const prev = index < posts.length ? posts[index + 1] : null;
   const fileUrl = post.fileUrl;
+  const title = post.title;
+  const description = post.description;
+  const category = post.category;
+  const date = post.createdAt;
 
-  return { ...post, fileUrl, next, prev };
+  return { title, category, date, description, fileUrl, next, prev };
 }
 
 export async function uploadImage(file: File): Promise<string> {
