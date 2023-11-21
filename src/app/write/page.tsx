@@ -103,7 +103,10 @@ export default function WritePage() {
         게시하기
       </Button>
       <div>
-        <div dangerouslySetInnerHTML={{ __html: editorData }}></div>
+        <div
+          className="ck-content"
+          dangerouslySetInnerHTML={{ __html: editorData }}
+        ></div>
       </div>
     </div>
   );

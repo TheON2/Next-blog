@@ -17,6 +17,9 @@ export default function MyEditor(props: MyEditorProps) {
         ckfinder: {
           uploadUrl: "/api/uploadImage",
         },
+        table: {
+          contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
+        },
       }}
       data={props.data}
       onChange={props.onChange}
