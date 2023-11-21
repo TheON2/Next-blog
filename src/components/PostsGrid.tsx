@@ -6,7 +6,7 @@ export default function PostsGrid({ posts }: Props) {
   return (
     <ul className="grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
       {posts.map((post) => (
-        <li key={post.path}>
+        <li key={post.thumbnail}>
           <PostCard post={post} />
         </li>
       ))}

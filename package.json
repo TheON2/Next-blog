@@ -24,6 +24,7 @@
     "formidable-serverless": "^1.1.1",
     "framer-motion": "^10.16.5",
     "mongodb": "^6.2.0",
+    "mongoose": "^8.0.1",
     "next": "13.5.4",
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.1",

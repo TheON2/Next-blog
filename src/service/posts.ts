@@ -7,14 +7,19 @@ import {
 import { readFile } from "fs/promises";
 import path from "path";
 import { cache } from "react";
+import mongoose from "mongoose";
+import Post from "@/models/post";
+import PostModel from "@/models/post";
 
 export type Post = {
+  _id: string;
   title: string;
   description: string;
-  date: Date;
   category: string;
-  path: string;
+  thumbnail: string; // 추가된 필드
   featured: boolean;
+  createdAt?: Date; // 자동 생성되는 필드, 선택적으로 설정
+  fileUrl: string;
 };
 
 export type PostData = Post & {
@@ -43,80 +48,44 @@ export async function getNonFeaturedPosts(): Promise<Post[]> {
     .then((posts) => posts.filter((post) => !post.featured));
 }
 
-export const getAllPosts = cache(async () => {
-  const filePath = path.join(process.cwd(), "data", "posts.json");
-  return readFile(filePath, "utf-8")
-    .then<Post[]>(JSON.parse)
-    .then((posts) => posts.sort((a, b) => (a.date > b.date ? -1 : 1)));
-});
+// export const getAllPosts = cache(async () => {
+//   const filePath = path.join(process.cwd(), "data", "posts.json");
+//   return readFile(filePath, "utf-8")
+//     .then<Post[]>(JSON.parse)
+//     .then((posts) => posts.sort((a, b) => (a.date > b.date ? -1 : 1)));
+// });
 
-export const getAllPost = async () => {
-  const bucketName = "theon2blog"; // S3 버킷 이름 설정
-
-  // S3 버킷에서 객체 목록을 가져옵니다.
-  const listObjectsCommand = new ListObjectsV2Command({
-    Bucket: bucketName,
-    Prefix: "blog/", // 게시글이 위치한 디렉토리 경로를 Prefix로 지정
-  });
-
+export const getAllPosts = async () => {
   try {
-    const { Contents } = await s3Client.send(listObjectsCommand);
-    if (!Contents) {
-      return [];
-    }
+    // MongoDB 데이터베이스에 연결
+    await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
 
-    // 각 객체의 내용을 읽어옵니다.
-    const postsPromises = Contents.map(async (object) => {
-      if (!object.Key) {
-        return null;
-      }
+    // 데이터베이스에서 모든 게시글을 검색
+    const posts = await PostModel.find({}); // 모든 게시글을 검색
+    console.log(posts);
 
-      const getObjectCommand = new GetObjectCommand({
-        Bucket: bucketName,
-        Key: object.Key,
-      });
-
-      // 객체의 URL을 가져옵니다. (옵션: 서명된 URL 사용)
-      // const url = await getSignedUrl(s3Client, getObjectCommand, { expiresIn: 3600 });
-
-      // 객체의 내용을 직접 가져옵니다.
-      const { Body } = await s3Client.send(getObjectCommand);
-      const bodyContents = await streamToString(Body); // 스트림을 문자열로 변환하는 helper 함수
-      console.log("바디컨텐츠" + bodyContents);
-
-      return bodyContents; // JSON으로 파싱된 객체를 반환
-    });
-
-    // 모든 게시글을 읽어옵니다.
-    return (await Promise.all(postsPromises)).filter((post) => post !== null);
+    return posts; // 검색된 게시글 반환
   } catch (error) {
-    console.error("Error fetching posts from S3", error);
-    throw new Error("Error fetching posts from S3");
+    console.error("Error fetching posts from MongoDB", error);
+    throw new Error("Error fetching posts from MongoDB");
   }
 };
 
-// 스트림을 문자열로 변환하는 helper 함수
-const streamToString = async (stream) => {
-  const chunks = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk instanceof Buffer ? chunk : Buffer.from(chunk));
-  }
-  return Buffer.concat(chunks).toString("utf-8");
-};
-
-export async function getPostData(fileName: string): Promise<PostData> {
-  const filePath = path.join(process.cwd(), "data", "posts", `${fileName}.md`);
+export async function getPostData(slug: string): Promise<PostData> {
   const posts = await getAllPosts();
-  const post = posts.find((post) => post.path === fileName);
+  console.log(posts);
+  const post = posts.find((post) => post._id.toString() === slug);
 
-  if (!post) throw new Error(`${fileName}에 해당하는 포스트를 찾을 수 없음`);
+  console.log("post" + post);
+
+  if (!post) throw new Error(`${slug}에 해당하는 포스트를 찾을 수 없음`);
 
   const index = posts.indexOf(post);
   const next = index > 0 ? posts[index - 1] : null;
   const prev = index < posts.length ? posts[index + 1] : null;
-  const content = await readFile(filePath, "utf-8");
+  const fileUrl = post.fileUrl;
 
-  return { ...post, content, next, prev };
+  return { ...post, fileUrl, next, prev };
 }
 
 export async function uploadImage(file: File): Promise<string> {

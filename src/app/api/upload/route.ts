@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { uploadPostData } from "@/service/posts";
 import { MongoClient } from "mongodb";
 import { NextResponse } from "next/server";
+import mongoose from "mongoose";
+import PostModel from "@/models/post";
 
 export const config = {
   api: {
@@ -26,26 +28,37 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   const json = JSON.parse(body);
 
-  const { htmlContent, title, description, category, thumbnail, featured } =
+  let { htmlContent, title, description, category, thumbnail, featured } =
     json.postData;
 
   try {
     const fileUrl = await uploadPostData(htmlContent);
 
     // MongoDB에 데이터 저장
-    const client = await MongoClient.connect(
-      process.env.NEXT_PUBLIC_MONGODB_URI as string
-    );
-    const db = client.db();
-    const collection = db.collection("theblog");
-    await collection.insertOne({
+
+    await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
+    if (thumbnail === "")
+      thumbnail =
+        "https://theon2blog.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20230607_124653702_02.png";
+    const post = new PostModel({
       title,
-      date: Date.now(),
       description,
       category,
       thumbnail,
       featured,
+      fileUrl,
     });
+
+    console.log(post);
+
+    try {
+      await post.save();
+      console.log("게시글 저장 성공");
+    } catch (error) {
+      console.error("게시글 저장 실패:", error);
+      // 오류의 자세한 내용을 확인하기 위해 error 객체 전체를 출력
+      console.error(error);
+    }
 
     console.log("업로드 성공");
     return new Response(JSON.stringify({ message: "게시글 업로드 성공" }), {

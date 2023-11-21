@@ -23,34 +23,24 @@ export async function generateMetadata({
 
 export default async function PostPage({ params: { slug } }: Props) {
   const post = await getPostData(slug);
-  const { title, path, next, prev } = post;
+  const { title, fileUrl, next, prev } = post;
+  console.log("SLUG" + slug);
 
   return (
     <article className="overflow-hidden bg-gray-100 shadow-lg m-4">
-      <CKEditorContent
-        contentUrl={
-          "https://theon2blog.s3.ap-northeast-2.amazonaws.com/blog/1700034031627.html"
-        }
-      />
-      {/* <Image
-        className="w-full h-1/5 max-h-[500px]"
-        src={`/images/posts/${path}.png`}
-        alt={title}
-        width={760}
-        height={420}
-      />
-      <PostContent post={post} />
+      <CKEditorContent contentUrl={fileUrl} />
+
       <section className="flex shadow-md">
         {prev && <AdjacentPostCard post={prev} type="prev" />}
         {next && <AdjacentPostCard post={next} type="next" />}
-      </section> */}
+      </section>
     </article>
   );
 }
 
-export async function generateStaticParams() {
+export async function getStaticParams() {
   const posts = await getFeaturedPosts();
   return posts.map((post) => ({
-    slug: post.path,
+    slug: post.fileUrl,
   }));
 }

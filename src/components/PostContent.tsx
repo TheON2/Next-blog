@@ -3,12 +3,12 @@ import { PostData } from "@/service/posts";
 import { AiTwotoneCalendar } from "react-icons/ai";
 
 export default function PostContent({ post }: { post: PostData }) {
-  const { title, description, date, content } = post;
+  const { title, description, createdAt, content } = post;
   return (
     <section className="flex flex-col p-4 w-full">
       <div className="flex items-center self-end text-sky-600">
         <AiTwotoneCalendar />
-        <p className="font-semibold ml-2">{date.toString()}</p>
+        <p className="font-semibold ml-2">{createdAt.toString()}</p>
       </div>
       <h1 className="text-4xl font-bold">{title}</h1>
       <p className="text-xl font-bold">{description}</p>
