@@ -9,50 +9,10 @@ body {
   overflow-y: auto;
 }
 
-@layer components {
-  .ckeditor-content table {
-    @apply border-collapse;
-  }
-
-  .ckeditor-content table,
-  .ckeditor-content td {
-    @apply border border-black;
-  }
+.ckeditor-container .ck-editor__editable {
+  min-height: 400px;
 }
 
-/* .ck-content > blockquote,
-.ck-content > dl,
-.ck-content > dd,
-.ck-content > h1,
-.ck-content > h2,
-.ck-content > h3,
-.ck-content > h4,
-.ck-content > h5,
-.ck-content > h6,
-.ck-content > hr,
-.ck-content > figure,
-.ck-content > p,
-.ck-content > pre {
-  margin: revert;
+.ck-editor__editable li {
+  list-style-position: inside;
 }
-
-.ck-content > ol,
-.ck-content > ul {
-  list-style: revert;
-  margin: revert;
-  padding: revert;
-}
-
-.ck-content > table {
-  border-collapse: revert;
-}
-
-.ck-content > h1,
-.ck-content > h2,
-.ck-content > h3,
-.ck-content > h4,
-.ck-content > h5,
-.ck-content > h6 {
-  font-size: revert;
-  font-weight: revert;
-} */

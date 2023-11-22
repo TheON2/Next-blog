@@ -1,8 +1,10 @@
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
+import CustomEditor from "@/ckeditor2";
 import { Markdown } from "@ckeditor/ckeditor5-markdown-gfm";
 
 import React from "react";
+import Alignment from "@ckeditor/ckeditor5-alignment/src/alignment";
 
 interface MyEditorProps {
   data: string;
@@ -11,26 +13,66 @@ interface MyEditorProps {
 
 export default function MyEditor(props: MyEditorProps) {
   return (
-    <CKEditor
-      editor={ClassicEditor}
-      config={{
-        ckfinder: {
-          uploadUrl: "/api/uploadImage",
-        },
-        table: {
-          contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
-        },
-      }}
-      data={props.data}
-      onChange={props.onChange}
-      onReady={(editor) => {
-        const root = editor.editing.view.document.getRoot();
-        if (root) {
-          editor.editing.view.change((writer) => {
-            writer.setStyle("min-height", "400px", root);
-          });
-        }
-      }}
-    />
+    <div className="ckeditor-container">
+      <CKEditor
+        editor={CustomEditor}
+        data={props.data}
+        onChange={props.onChange}
+        config={{
+          mediaEmbed: {
+            previewsInData: true,
+          },
+          ckfinder: {
+            uploadUrl: "/api/uploadImage",
+          },
+          toolbar: {
+            items: [
+              "bold",
+              "italic",
+              "underline",
+              "highlight",
+              "|",
+              "bulletedList",
+              "numberedList",
+              "|",
+              "outdent",
+              "indent",
+              "|",
+              "blockQuote",
+              "code",
+              "codeBlock",
+              "findAndReplace",
+              "|",
+              "alignment",
+              "fontBackgroundColor",
+              "fontFamily",
+              "fontColor",
+              "fontSize",
+              "|",
+              "horizontalLine",
+              "pageBreak",
+              "removeFormat",
+              "showBlocks",
+              "sourceEditing",
+              "style",
+              "subscript",
+              "textPartLanguage",
+              "todoList",
+              "selectAll",
+              "insertTable",
+              "imageInsert",
+              "link",
+              "imageUpload",
+              "mediaEmbed",
+              "undo",
+              "redo",
+            ],
+            shouldNotGroupWhenFull: true,
+          },
+
+          language: "ko",
+        }}
+      />
+    </div>
   );
 }

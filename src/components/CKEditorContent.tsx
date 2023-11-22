@@ -28,7 +28,7 @@ const CKEditorContent: React.FC<CKEditorContentProps> = ({ contentUrl }) => {
   }, [contentUrl]);
   return (
     <div
-      className="ck-content min-h-[400px]"
+      className="ck-content p-4 min-h-[400px]"
       dangerouslySetInnerHTML={{ __html: content }}
     />
   );
