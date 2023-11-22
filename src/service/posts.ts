@@ -89,6 +89,21 @@ export async function getPostData(slug: string): Promise<PostData> {
   return { title, category, date, description, fileUrl, next, prev };
 }
 
+export async function getPostHTML(contentUrl: string): Promise<string> {
+  let htmlContent;
+  try {
+    const response = await fetch(contentUrl);
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    htmlContent = await response.text();
+  } catch (error) {
+    console.error("Failed to fetch content", error);
+  }
+
+  return htmlContent as string;
+}
+
 export async function uploadImage(file: File): Promise<string> {
   const fileName = file.name;
   const buffer = Buffer.from(await file.arrayBuffer());

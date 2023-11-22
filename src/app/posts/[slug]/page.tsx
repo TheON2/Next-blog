@@ -11,15 +11,15 @@ type Props = {
   };
 };
 
-// export async function generateMetadata({
-//   params: { slug },
-// }: Props): Promise<Metadata> {
-//   const { title, description } = await getPostData(slug);
-//   return {
-//     title,
-//     description,
-//   };
-// }
+export async function generateMetadata({
+  params: { slug },
+}: Props): Promise<Metadata> {
+  const { title, description } = await getPostData(slug);
+  return {
+    title,
+    description,
+  };
+}
 
 export default async function PostPage({ params: { slug } }: Props) {
   const post = await getPostData(slug);
@@ -29,10 +29,16 @@ export default async function PostPage({ params: { slug } }: Props) {
   return (
     <div>
       <Card className="py-4">
-        <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-          <h1 className="text-3xl font-bold">{title}</h1>
-          <div className="flex gap-4">
-            <Chip color="default">{category}</Chip>
+        <CardHeader className="pb-0 pt-2 px-4 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold">{title}</h1>
+            <div className="flex gap-4">
+              <Chip color="default">{category}</Chip>
+            </div>
+          </div>
+          <div className="flex gap-2 mr-8">
+            <h1>수정</h1>
+            <h1>삭제</h1>
           </div>
         </CardHeader>
         <CardBody className="overflow-visible py-2">
@@ -49,9 +55,9 @@ export default async function PostPage({ params: { slug } }: Props) {
   );
 }
 
-// export async function getStaticParams() {
-//   const posts = await getFeaturedPosts();
-//   return posts.map((post) => ({
-//     slug: post.fileUrl,
-//   }));
-// }
+export async function getStaticParams() {
+  const posts = await getFeaturedPosts();
+  return posts.map((post) => ({
+    slug: post.fileUrl,
+  }));
+}

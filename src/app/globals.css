@@ -16,3 +16,7 @@ body {
 .ck-editor__editable li {
   list-style-position: inside;
 }
+
+.ck-editor__editable .todo-list {
+  margin-left: 20px;
+}
