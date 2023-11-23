@@ -13,7 +13,8 @@ const CKEditorContent: React.FC<CKEditorContentProps> = ({ contentUrl }) => {
     // S3 버킷에서 HTML 파일을 가져오는 함수
     async function fetchContent() {
       try {
-        const response = await fetch(contentUrl);
+        const noCacheUrl = `${contentUrl}?nocache=${new Date().getTime()}`;
+        const response = await fetch(noCacheUrl);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }

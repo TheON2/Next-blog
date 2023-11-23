@@ -11,7 +11,15 @@ type Props = {
 export default async function UpdatePage({ params: { slug } }: Props) {
   const post = await getPostData(slug);
   const postHTML = await getPostHTML(post.fileUrl);
-  console.log(postHTML);
+  const fileNameWithExtension = post.fileUrl.split("/").pop() as string;
+  const fileName = fileNameWithExtension.replace(".html", "");
 
-  return <CKEditorForm post={post} postHTML={postHTML} />;
+  return (
+    <CKEditorForm
+      post={post}
+      postHTML={postHTML}
+      fileName={fileName as string}
+      postId={slug}
+    />
+  );
 }

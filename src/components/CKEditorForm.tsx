@@ -14,9 +14,13 @@ const MyEditorWithNoSSR = dynamic(() => import("../app/MyEditor/MyEditor"), {
 export default function CKEditorForm({
   post,
   postHTML,
+  fileName,
+  postId,
 }: {
   post: PostData;
   postHTML: string;
+  fileName: string;
+  postId: string;
 }) {
   const [editorData, setEditorData] = useState("");
   const [title, setTitle] = useState("");
@@ -65,16 +69,16 @@ export default function CKEditorForm({
         category,
         thumbnail,
         featured,
+        fileName,
+        postId,
       };
-      const response = await fetch("/api/upload", {
+      const response = await fetch("/api/update", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ postData }),
       });
-
-      console.log(response);
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
@@ -87,9 +91,9 @@ export default function CKEditorForm({
   const htmlContent = marked(editorData);
 
   return (
-    <div className="flex flex-row w-full gap-4">
+    <div className="flex flex-row w-full">
       {/* 글쓰기 에디터 섹션 */}
-      <div className="flex-1">
+      <div className="flex-1 overflow-y-auto h-[800px]">
         <div key={"lg"} className="flex w-full flex-wrap gap-4">
           <Input
             size={"lg"}
@@ -126,7 +130,7 @@ export default function CKEditorForm({
       </div>
 
       {/* 미리보기 섹션 */}
-      <div className="flex-1">
+      <div className="flex-1 overflow-y-auto h-[800px]">
         <div
           className="ck-content p-4"
           dangerouslySetInnerHTML={{ __html: htmlContent }}

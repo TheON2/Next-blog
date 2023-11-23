@@ -90,9 +90,10 @@ export async function getPostData(slug: string): Promise<PostData> {
 }
 
 export async function getPostHTML(contentUrl: string): Promise<string> {
+  const noCacheUrl = `${contentUrl}?nocache=${new Date().getTime()}`;
   let htmlContent;
   try {
-    const response = await fetch(contentUrl);
+    const response = await fetch(noCacheUrl);
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -140,4 +141,24 @@ export async function uploadPostData(
   );
 
   return `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${fileName}`;
+}
+
+export async function updatePostData(
+  postName: string,
+  htmlContent: string,
+  contentType: string = "text/html"
+): Promise<string> {
+  const safeFileName = encodeURIComponent(postName).replace(/%/g, "") + ".html";
+  const buffer = Buffer.from(htmlContent, "utf-8");
+
+  await s3Client.send(
+    new PutObjectCommand({
+      Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME,
+      Key: `blog/${safeFileName}`,
+      Body: buffer,
+      ContentType: contentType,
+    })
+  );
+
+  return `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/blog/${safeFileName}`;
 }
