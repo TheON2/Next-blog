@@ -4,6 +4,7 @@ import { getFeaturedPosts, getPostData } from "@/service/posts";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Chip } from "@nextui-org/chip";
 import { Metadata } from "next";
+import Link from "next/link";
 
 type Props = {
   params: {
@@ -23,7 +24,7 @@ export async function generateMetadata({
 
 export default async function PostPage({ params: { slug } }: Props) {
   const post = await getPostData(slug);
-  const { title, category, fileUrl, next, prev } = post;
+  const { title, category, fileUrl, next, prev, postId } = post;
   console.log("SLUG" + post);
 
   return (
@@ -37,7 +38,9 @@ export default async function PostPage({ params: { slug } }: Props) {
             </div>
           </div>
           <div className="flex gap-2 mr-8">
-            <h1>수정</h1>
+            <Link href={`/update/${post.postId}`}>
+              <h1>수정</h1>
+            </Link>
             <h1>삭제</h1>
           </div>
         </CardHeader>

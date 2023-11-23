@@ -19,6 +19,9 @@ export default function MyEditor(props: MyEditorProps) {
         data={props.data}
         onChange={props.onChange}
         config={{
+          ui: {
+            viewportOffset: { top: 200 },
+          },
           mediaEmbed: {
             previewsInData: true,
           },

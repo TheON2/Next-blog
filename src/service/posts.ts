@@ -26,7 +26,10 @@ export type PostData = {
   title: string;
   fileUrl: string;
   category: string;
+  thumbnail: string;
   date: string;
+  postId: string;
+  featured: boolean;
   description: string;
   next: Post | null;
   prev: Post | null;
@@ -85,8 +88,22 @@ export async function getPostData(slug: string): Promise<PostData> {
   const description = post.description;
   const category = post.category;
   const date = post.createdAt;
+  const postId = post._id;
+  const featured = post.featured;
+  const thumbnail = post.thumbnail;
 
-  return { title, category, date, description, fileUrl, next, prev };
+  return {
+    title,
+    category,
+    date,
+    description,
+    featured,
+    fileUrl,
+    thumbnail,
+    next,
+    prev,
+    postId,
+  };
 }
 
 export async function getPostHTML(contentUrl: string): Promise<string> {

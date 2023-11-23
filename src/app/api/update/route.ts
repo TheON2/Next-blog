@@ -54,9 +54,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
         title,
         description,
         category,
-        thumbnail:
-          thumbnail ||
-          "https://theon2blog.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20230607_124653702_02.png",
+        thumbnail,
         featured,
         fileUrl,
       },

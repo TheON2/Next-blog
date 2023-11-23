@@ -6,6 +6,7 @@ import { Checkbox } from "@nextui-org/checkbox";
 import { Input } from "@nextui-org/input";
 import { marked } from "marked";
 import { PostData } from "@/service/posts";
+import { Chip } from "@nextui-org/react";
 
 const MyEditorWithNoSSR = dynamic(() => import("../app/MyEditor/MyEditor"), {
   ssr: false,
@@ -36,6 +37,8 @@ export default function CKEditorForm({
     setEditorData(postHTML);
     setTitle(post.title);
     setCategory(post.category);
+    setFeatured(post.featured);
+    setThumbnail(post.thumbnail);
   }, [postHTML, post]);
 
   const handleTitleChange = (event: any) => {
@@ -52,6 +55,7 @@ export default function CKEditorForm({
     const parser = new DOMParser();
     const doc = parser.parseFromString(newData, "text/html");
     const firstImage = doc.querySelector("img");
+    console.log(firstImage);
     if (firstImage && firstImage.src) {
       setThumbnail(firstImage.src);
     }
@@ -72,6 +76,8 @@ export default function CKEditorForm({
         fileName,
         postId,
       };
+
+      console.log("썸네일" + thumbnail);
       const response = await fetch("/api/update", {
         method: "POST",
         headers: {
@@ -92,47 +98,58 @@ export default function CKEditorForm({
 
   return (
     <div className="flex flex-row w-full">
-      {/* 글쓰기 에디터 섹션 */}
-      <div className="flex-1 overflow-y-auto h-[800px]">
-        <div key={"lg"} className="flex w-full flex-wrap gap-4">
-          <Input
-            size={"lg"}
-            type="email"
-            label="제목"
-            value={title}
-            onChange={handleTitleChange}
-          />
-          <Input
-            size={"sm"}
-            type="email"
-            label=""
-            placeholder="카테고리"
-            value={category}
-            onChange={handleCategoryChange}
-          />
+      <div className="flex flex-1 max-w-[50%] flex-col">
+        <div className="sticky top-0 bg-white z-10 h-[230px]">
+          <div className="flex flex-wrap gap-4 p-4">
+            <Input
+              size="sm"
+              type="email"
+              label="제목"
+              value={title}
+              onChange={handleTitleChange}
+            />
+            <Input
+              size="sm"
+              type="email"
+              label=""
+              placeholder="카테고리"
+              value={category}
+              onChange={handleCategoryChange}
+            />
+            <Checkbox
+              className="my-4"
+              size="md"
+              onChange={(e) => setFeatured(e.target.checked)}
+            >
+              비밀글
+            </Checkbox>
+            <Button
+              className="my-4"
+              color="primary"
+              variant="shadow"
+              onClick={handleSubmit}
+            >
+              게시하기
+            </Button>
+          </div>
         </div>
-        <Checkbox
-          className="my-4"
-          size="md"
-          onChange={(e) => setFeatured(e.target.checked)}
-        >
-          비밀글
-        </Checkbox>
-        <MyEditorWithNoSSR data={editorData} onChange={handleEditorChange} />
-        <Button
-          className="my-4"
-          color="primary"
-          variant="shadow"
-          onClick={handleSubmit}
-        >
-          게시하기
-        </Button>
+        {/* 글쓰기 에디터 섹션 */}
+        <div className="overflow-y-auto h-[650px]">
+          <MyEditorWithNoSSR data={editorData} onChange={handleEditorChange} />
+        </div>
       </div>
-
       {/* 미리보기 섹션 */}
-      <div className="flex-1 overflow-y-auto h-[800px]">
+      <div className="flex-1 overflow-y-auto h-[800px] max-w-[50%]">
+        <h1 className="text-3xl font-bold">{title}</h1>
+        <div className="flex gap-4">
+          {category.length >= 1 && (
+            <Chip className="my-4" color="default">
+              {category}
+            </Chip>
+          )}
+        </div>
         <div
-          className="ck-content p-4"
+          className="ck-content p-8 break-words"
           dangerouslySetInnerHTML={{ __html: htmlContent }}
         ></div>
       </div>
