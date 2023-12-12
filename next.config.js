@@ -10,6 +10,7 @@ const nextConfig = {
     domains: [
       "images.unsplash.com",
       "theon2blog.s3.ap-northeast-2.amazonaws.com",
+      "velog.velcdn.com",
     ],
   },
 };
