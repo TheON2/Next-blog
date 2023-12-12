@@ -1,4 +1,5 @@
 import {
+  DeleteObjectCommand,
   GetObjectCommand,
   ListObjectsV2Command,
   PutObjectCommand,
@@ -64,7 +65,13 @@ export const getAllPosts = async () => {
     const posts = await PostModel.find({}); // 모든 게시글을 검색
     console.log(posts);
 
-    return posts; // 검색된 게시글 반환
+    const transformedPosts = posts.map((post) => {
+      return {
+        ...post.toObject(),
+        _id: post._id.toString(), // ObjectId를 문자열로 변환
+      };
+    });
+    return transformedPosts;
   } catch (error) {
     console.error("Error fetching posts from MongoDB", error);
     throw new Error("Error fetching posts from MongoDB");
@@ -178,4 +185,19 @@ export async function updatePostData(
   );
 
   return `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/blog/${safeFileName}`;
+}
+
+export async function deletePostData(postName: string): Promise<void> {
+  // URL에서 안전한 파일 이름 생성
+  const safeFileName = encodeURIComponent(postName).replace(/%/g, "") + ".html";
+
+  // S3 클라이언트를 사용하여 DeleteObjectCommand 실행
+  await s3Client.send(
+    new DeleteObjectCommand({
+      Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME,
+      Key: `blog/${safeFileName}`,
+    })
+  );
+
+  console.log(`Deleted: blog/${safeFileName}`);
 }

@@ -52,8 +52,17 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     console.log(post);
 
     try {
-      await post.save();
+      const savedPost = await post.save();
       console.log("게시글 저장 성공");
+      return new Response(
+        JSON.stringify({
+          message: "게시글 업로드 성공",
+        }),
+        {
+          status: 200,
+          statusText: savedPost._id.toString(),
+        }
+      );
     } catch (error) {
       console.error("게시글 저장 실패:", error);
       // 오류의 자세한 내용을 확인하기 위해 error 객체 전체를 출력
@@ -61,9 +70,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     }
 
     console.log("업로드 성공");
-    return new Response(JSON.stringify({ message: "게시글 업로드 성공" }), {
-      status: 200,
-    });
   } catch (error: unknown) {
     if (error instanceof Error) {
       new Response(JSON.stringify({ error: error.message }), {

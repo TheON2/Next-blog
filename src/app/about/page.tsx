@@ -27,7 +27,7 @@ export default function AboutPage() {
         </p>
         <h2 className={TITLE_CLASS}>Skills</h2>
         <p>
-          React, Vue, Node
+          NextJS14 , ReactJS18 , NodeJS
           <br />
           Git, Clean Code <br />
           VS Code, IntelliJ, MongoDB

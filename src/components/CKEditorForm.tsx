@@ -7,6 +7,8 @@ import { Input } from "@nextui-org/input";
 import { marked } from "marked";
 import { PostData } from "@/service/posts";
 import { Chip } from "@nextui-org/react";
+import ButtonModal from "./ButtonModal";
+import SubmitModal from "./SubmitModal";
 
 const MyEditorWithNoSSR = dynamic(() => import("../app/MyEditor/MyEditor"), {
   ssr: false,
@@ -29,6 +31,7 @@ export default function CKEditorForm({
   const [category, setCategory] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [featured, setFeatured] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
 
   console.log(post);
   console.log(postHTML);
@@ -85,6 +88,8 @@ export default function CKEditorForm({
         },
         body: JSON.stringify({ postData }),
       });
+      setIsSubmit(true);
+      //window.location.href = `/posts/${response.statusText}`;
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
@@ -123,14 +128,17 @@ export default function CKEditorForm({
             >
               비밀글
             </Checkbox>
-            <Button
-              className="my-4"
-              color="primary"
-              variant="shadow"
-              onClick={handleSubmit}
-            >
-              게시하기
-            </Button>
+            <ButtonModal
+              title={"수정하기"}
+              text={"글을 수정하시겠습니까?"}
+              action={handleSubmit}
+            />
+            <SubmitModal
+              title={"수정완료"}
+              text={"수정이 완료되었습니다."}
+              isOpen={isSubmit}
+              onClose={() => (window.location.href = `/posts/${postId}`)}
+            />
           </div>
         </div>
         {/* 글쓰기 에디터 섹션 */}

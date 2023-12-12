@@ -70,6 +70,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     console.log("게시글 수정 성공");
     return new Response(JSON.stringify({ message: "게시글 수정 성공" }), {
       status: 200,
+      statusText: updatedPost._id.toString(),
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
